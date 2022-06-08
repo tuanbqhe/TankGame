@@ -18,8 +18,8 @@ const stu = new student();
 const per = new person();
 let k = stu;
 stu.age = 100;
-
 console.log(k);
 11111dwrerw
 11111
 fewafae
+newe 1
