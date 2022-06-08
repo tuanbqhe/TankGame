@@ -22,4 +22,4 @@ stu.age = 100;
 console.log(k);
 11111dwrerw
 11111
-
+fewafae
