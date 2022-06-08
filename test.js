@@ -20,6 +20,6 @@ let k = stu;
 stu.age = 100;
 
 console.log(k);
-asdfsadwrerw
-asdfsd
+11111dwrerw
+11111
 
