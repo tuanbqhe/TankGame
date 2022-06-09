@@ -71,6 +71,7 @@ module.exports = class LobbyGame extends LobbyBase {
     despawnBullet(bullet = Bullet) {
         const index = this.bullets.indexOf(bullet);
         this.bullets.splice(index, 1);
+        ////sadf
         for(let connection of this.connections) {
             connection.socket.emit('serverUnspawn', bullet);
         }
