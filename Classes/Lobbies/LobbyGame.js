@@ -3,6 +3,7 @@ const LobbyState = require('../Utility/lobbyState')
 const Connection = require('../Connection')
 const Vector2 = require('../Vector2.js')
 const Bullet = require('../Bullet.js')
+const LobbyBase = require('./LobbyBase')
 module.exports = class LobbyGame extends LobbyBase {
     constructor(settings = gameLobbySettings) {
         super();
@@ -15,7 +16,7 @@ module.exports = class LobbyGame extends LobbyBase {
     onUpdate() {
         this.updateBullets();
         this.updateDeadPlayers();
-        if(this.connections.length = 0) {
+        if(this.connections.length == 0) {
             this.endGameLobby();
         }
     }
@@ -35,11 +36,11 @@ module.exports = class LobbyGame extends LobbyBase {
 
     onLeaveLobby(connection = Connection) {
         super.onLeaveLobby(connection);
-        if(this.connections.length < this.settings.minPlayers){
-            for(let otherConnection in this.connections){
-                connection.server.onSwitchLobby(otherConnection, connection.server.generalServerId)
-            }
-        }
+        // if(this.connections.length < this.settings.minPlayers){
+            // for(let otherConnection in this.connections){
+                // connection.server.onSwitchLobby(otherConnection, connection.server.generalServerId)
+            // }
+        // }
     }
     spawnAllPlayersIntoGame(connection = Connection) {
         for(let connection of this.connections) {
@@ -52,9 +53,10 @@ module.exports = class LobbyGame extends LobbyBase {
         connection.socket.emit("spawn", connection.player);
         connection.socket.broadcast.to("spawn", connection.player);
         for(let connectionOther of this.connections) {
-            if(connection.player.id != other.player.id)
+            if(connection.player.id != connectionOther.player.id)
             connection.socket.emit("spawn", connectionOther.player);
         }
+
     }
     removePlayer(connection = Connection) {
         ortherConnection.socket.broadcast.to(this.id).emit("disconnected", connection.player);
@@ -65,7 +67,12 @@ module.exports = class LobbyGame extends LobbyBase {
             let isDestroyed = bullet.onUpdate();
             if(isDestroyed) {
                 this.despawnBullet(bullet);
+            } else {
+                this.connections.forEach(connection => { 
+                    connection.socket.emit('updatePosition', bullet);
+                });
             }
+
         }
     }
     despawnBullet(bullet = Bullet) {
@@ -73,7 +80,7 @@ module.exports = class LobbyGame extends LobbyBase {
         this.bullets.splice(index, 1);
         ////sadf
         for(let connection of this.connections) {
-            connection.socket.emit('serverUnspawn', bullet);
+            connection.socket.emit('serverUnSpawn', bullet);
         }
     }
     updateDeadPlayers() {
@@ -90,7 +97,7 @@ module.exports = class LobbyGame extends LobbyBase {
         }
     }
     onFireBullet(connection, data) {
-        const bullet = new cullet();
+        const bullet = new Bullet();
         const socket = connection.socket;
         bullet.name = "Bullet";
         bullet.activatorId = data.activatorId;
@@ -123,6 +130,11 @@ module.exports = class LobbyGame extends LobbyBase {
                 bullet.isDestroyed = true;
             }
         }
+        console.log(this.bullets[0]);
+        
+    }
+    randomRange( min, max ) {
+        return Math.round((max - min) * Math.random()) + min;
     }
 }
 

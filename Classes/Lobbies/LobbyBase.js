@@ -11,15 +11,19 @@ module.exports = class LobbyBase {
 
     onEnterLobby(connection = Connection) {
         console.log("This player "+ connection.player.displayPlayerInfor()+ " has entered lobby "+ this.id);
-        connection.player = this.id;
+        connection.player.lobby = this.id;
         connection.lobby = this;
-        lobby.connections.push(connection);
+        this.connections.push(connection);
 
+    }
+
+    onUpdate(){
+        
     }
 
     onLeaveLobby(connection = Connection) {
         console.log("This player "+ connection.player.displayPlayerInfor()+ " has leaved lobby "+ this.id);
-        connection.player = null;
+        connection.player.lobby = null;
         connection.lobby = null;
         const currentIndex = this.connections.indexOf(connection);
         this.connections.splice(currentIndex, 1);

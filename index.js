@@ -1,5 +1,6 @@
 const io = require('socket.io')(process.env.PORT || 4567);
-
+const Server = require('./Classes/Server')
+const Connection = require('./Classes/Connection');
 console.log("Server started");
 
 if(process.env.PORT === undefined ) {
@@ -14,8 +15,8 @@ setInterval(() => {
     server.onUpdate();
 }, 100);
 
-io.on("connection", (socket) => {
-    let connection = new Connection(socket);
+io.on("connection", async(socket) => {
+    let connection = server.onConnect(socket);
     connection.createEvent();
-    connection.emit("register", {id : connection.player.id});
+    connection.socket.emit("register", {id : connection.player.id});
 })

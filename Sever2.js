@@ -39,7 +39,7 @@ setInterval(() => {
 function serverUnSpawn (bullet) {
     index = bullets.indexOf(bullet);
     bullets.splice(index, 1);
-    let returnData = { id: bullet.id }; count = 0;
+    let returnData = { id: bullet.id };
     for (let sk in sockets) {
         sockets[sk].emit("serverUnSpawn", returnData);
     }
@@ -91,11 +91,6 @@ io.on('connection', (socket) => {
             }
         }
         
-        for (let bullet of bullets) {
-            if (bullet.id == bulletId) {
-                bullet.isDestroyed = true;
-            }
-        }
     })
     socket.on('fireBullet', (data) => {
 

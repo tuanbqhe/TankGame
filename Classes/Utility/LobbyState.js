@@ -1,4 +1,4 @@
-modules.exports = class LobbyState {
+module.exports = class LobbyState {
     constructor() {
         this.GAME = 'game';
         this.LOBBY = 'lobby';

@@ -7,11 +7,10 @@ module.exports = class Connection {
     }
 
     createEvent() {
-        let connection = this.connection;
-        let lobby = this.connection;
+        let connection = this;
         let socket = this.socket;
         let server = this.server;
-
+        let player = this.player;
         socket.on('disconnect', () => {
             server.onDisconnected(connection);
         });
@@ -32,20 +31,21 @@ module.exports = class Connection {
             server.onAttemptToJoinGame(connection);
         })
         socket.on('fireBullet', (data) => {
-            lobby.onFireBullet(connection, data);
+            this.lobby.onFireBullet(connection, data);
         })
         socket.on('collisionDestroy', (data) => {
-            lobby.onCollisionDestroy(connection, data);
+            this.lobby.onCollisionDestroy(connection, data);
         })
         socket.on('updatePosition', (data) => {
             player.position.x = data.position.x;
             player.position.y = data.position.y;
-            socket.broadcast.to(lobby.id, player).emit('updatePosition', player);
+            socket.broadcast.to(player.lobby).emit('updatePosition', player);
         })
         socket.on("updateRotation", (data) => {
+            
             player.tankRotation = data.tankRotation;
             player.barrelRotation = data.barrelRotation;
-            socket.broadcast.to(lobby.id).emit('updateRotation', player);
+            socket.broadcast.to(player.lobby).emit('updateRotation', player);
         })
         socket.on('quitGame', () => {
             server.onSwitchLobby(connection, sever.generalID);

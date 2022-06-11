@@ -39,5 +39,8 @@ module.exports = class Player {
     random2Numeric(min, max) {
         return Math.round(Math.random() * (max - min)) + min;
     }
+    displayPlayerInfor(){
+      return ("("+ this.id+") with health :"+ this.health);
+    }
 
 }

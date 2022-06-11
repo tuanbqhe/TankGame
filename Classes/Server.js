@@ -1,31 +1,37 @@
+const LobbyBase = require('./Lobbies/LobbyBase')
+let GameLobby = require('./Lobbies/LobbyGame')
+let Player = require("./Player");
+const Connection = require("./Connection");
 module.exports = class Server {
     constructor( isLocal = false){
-        this.database = new Database();
+        // this.database = new Database(isLocal);
         this.lobbys = [];
-        let sever = this;
         this.connections = [];
-
         this.generalServerId = "General id sever";
         this.startLobby = new LobbyBase();
         this.startLobby.id = this.generalServerId;
         this.lobbys[this.startLobby.id] = this.startLobby;
     }
+    
 
     onUpdate() {
-        for(let i in lobbys){
-            server.lobbys[i].onUpdate();
-        }
+         for(let id in this.lobbys) {
+            if(this.lobbys[id] instanceof GameLobby){
+                this.lobbys[id].onUpdate();
+            }
+         }
     }
 
     onConnect(socket) {
         let connection = new Connection();
         connection.player = new Player();
         connection.socket = socket;
-        connection.player.lobby = this.startLobby.id;
-        connection.lobby = this.lobbys[this.startLobby];
-        connection.server = server;
 
+        connection.player.lobby = this.startLobby.id;
+        connection.lobby = this.lobbys[this.startLobby.id]
+        connection.server = this;
         socket.join(connection.player.lobby);
+
         console.log("Add new player to server playerId: " + connection.player.id);
         this.connections[connection.player.id] = connection;
         connection.lobby.onEnterLobby(connection);
@@ -34,9 +40,9 @@ module.exports = class Server {
     }
 
     onDisconnected(connection = Connection) {
-        const currentIndex = connection.player.id;
+        const currentIndex = connection.player.lobby;
         delete this.connections[connection.id];
-        console.log("Player "+ connection.player.displayerInformaion()+ "has disconnected");
+        console.log("Player "+ connection.player.displayPlayerInfor()+ " has disconnected");
         connection.socket.broadcast.to(connection.player.lobby).emit("disconnected", {id: currentIndex});
         this.lobbys[currentIndex].onLeaveLobby(connection);
 
@@ -46,7 +52,7 @@ module.exports = class Server {
 
     }
     closeDownLobby(index) {
-        console.log('Closing down lobby (' + currentIndex +')' );
+        console.log('Closing down lobby (' + index +')' );
         delete this.lobbys[index];
     }
 
@@ -55,8 +61,8 @@ module.exports = class Server {
         let gameLobbys = [];
 
         for(let id in this.lobbys) {
-            if(lobbys[id] instanceof GameLobbys){
-                gameLobbys.push(lobbys[id]);
+            if(this.lobbys[id] instanceof GameLobby){
+                gameLobbys.push(this.lobbys[id]);
             }
         }
 
@@ -64,7 +70,7 @@ module.exports = class Server {
 
         gameLobbys.forEach(lobby => {
             if(!lobbyFound){
-                canJoin = lobby.canJoin();
+                let canJoin = lobby.canEnterLobby();
                 if(canJoin) {
                     lobbyFound = true;
                     this.onSwitchLobby(connection , lobby.id)
@@ -72,9 +78,9 @@ module.exports = class Server {
             }
         })
         if(!lobbyFound) {
-            let gameLobby = new GameLobby("FFa", 2,2, data);
+            let gameLobby = new GameLobby("FFa", 2,2, null);
             gameLobby.endGameLobby = () => this.closeDownLobby(gameLobby.id);
-            gameLobbys[gameLobby.id] = gameLobby;
+            this.lobbys[gameLobby.id] = gameLobby;
             this.onSwitchLobby(connection, gameLobby.id);
 
         }
@@ -82,10 +88,13 @@ module.exports = class Server {
     }
     
     onSwitchLobby(connection, lobbyId) {
+        
         connection.socket.join(lobbyId);
+        
         connection.lobby = this.lobbys[lobbyId]; 
-        lobbys[connection.player.id].onLeaveLobby(connection);
-        lobbys[lobbyId].onEnterLobby(connection);
+        this.lobbys[connection.player.lobby].onLeaveLobby(connection);
+
+        this.lobbys[lobbyId].onEnterLobby(connection);
 
     }
 
