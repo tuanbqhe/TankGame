@@ -126,8 +126,9 @@ module.exports = class LobbyGame extends LobbyBase {
         
         for (let bullet of this.bullets) {
             if (bullet.id == bulletId) {
-                bullet.isDestroyed = true;
                 this.despawnBullet(bullet);
+                bullet.isDestroyed = true;
+                
             }
         }
         
