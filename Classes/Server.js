@@ -2,6 +2,7 @@ const LobbyBase = require('./Lobbies/LobbyBase')
 let GameLobby = require('./Lobbies/LobbyGame')
 let Player = require("./Player");
 const Connection = require("./Connection");
+const GameLobbySettings = require("./Lobbies/GameLobbySettings")
 module.exports = class Server {
     constructor( isLocal = false){
         // this.database = new Database(isLocal);
@@ -43,7 +44,7 @@ module.exports = class Server {
         const currentIndex = connection.player.lobby;
         delete this.connections[connection.id];
         console.log("Player "+ connection.player.displayPlayerInfor()+ " has disconnected");
-        connection.socket.broadcast.to(connection.player.lobby).emit("disconnected", {id: currentIndex});
+        connection.socket.broadcast.to(connection.player.lobby).emit("disconnected", {id: connection.player.id});
         this.lobbys[currentIndex].onLeaveLobby(connection);
 
         if(currentIndex != this.generalServerId && this.lobbys[currentIndex] != null && this.lobbys[currentIndex].length == 0) {            
@@ -59,7 +60,6 @@ module.exports = class Server {
     onAttemptToJoinGame(connection = Connection) {
         let lobbyFound = false;
         let gameLobbys = [];
-
         for(let id in this.lobbys) {
             if(this.lobbys[id] instanceof GameLobby){
                 gameLobbys.push(this.lobbys[id]);
@@ -78,11 +78,10 @@ module.exports = class Server {
             }
         })
         if(!lobbyFound) {
-            let gameLobby = new GameLobby("FFa", 2,2, null);
+            let gameLobby = new GameLobby(new GameLobbySettings('FFA', 2, 2, "data"));
             gameLobby.endGameLobby = () => this.closeDownLobby(gameLobby.id);
             this.lobbys[gameLobby.id] = gameLobby;
             this.onSwitchLobby(connection, gameLobby.id);
-
         }
 
     }
@@ -95,7 +94,7 @@ module.exports = class Server {
         this.lobbys[connection.player.lobby].onLeaveLobby(connection);
 
         this.lobbys[lobbyId].onEnterLobby(connection);
-
+        
     }
 
 

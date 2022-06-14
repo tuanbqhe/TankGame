@@ -20,7 +20,7 @@ module.exports = class LobbyBase {
     onUpdate(){
         
     }
-
+    onFireBullet() {}
     onLeaveLobby(connection = Connection) {
         console.log("This player "+ connection.player.displayPlayerInfor()+ " has leaved lobby "+ this.id);
         connection.player.lobby = null;

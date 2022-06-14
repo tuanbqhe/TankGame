@@ -18,7 +18,7 @@ module.exports = class Player {
         if (this.health <= 0) {
             this.isDead = true;    
             this.position = new Vector2(this.random2Numeric(-3,3),this.random2Numeric(-8,8));
-            this.health = new Number(10);
+            this.health = new Number(100);
             
         }
         console.log("Health is: "+ this.health);

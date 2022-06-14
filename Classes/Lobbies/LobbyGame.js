@@ -31,7 +31,7 @@ module.exports = class LobbyGame extends LobbyBase {
     
     onEnterLobby(connection = Connection) {
         super.onEnterLobby(connection);
-        this.spawnAllPlayersIntoGame();
+        this.spawnAllPlayersIntoGame(connection);
     }
 
     onLeaveLobby(connection = Connection) {
@@ -43,15 +43,14 @@ module.exports = class LobbyGame extends LobbyBase {
         // }
     }
     spawnAllPlayersIntoGame(connection = Connection) {
-        for(let connection of this.connections) {
             this.addPlayer(connection);
-        }
+        
     }
     addPlayer(connection = Connection) {
-        
-        connection.player.position = new Vector2(this.randomRange(-3,3),this.randomRange(-8,8));
+        console.log("+++++++++++++++++++++=");
+        connection.player.position = new Vector2(this.randomRange(0,2),this.randomRange(0,2));
         connection.socket.emit("spawn", connection.player);
-        connection.socket.broadcast.to("spawn", connection.player);
+        connection.socket.broadcast.to(this.id).emit("spawn", connection.player);
         for(let connectionOther of this.connections) {
             if(connection.player.id != connectionOther.player.id)
             connection.socket.emit("spawn", connectionOther.player);
@@ -68,9 +67,9 @@ module.exports = class LobbyGame extends LobbyBase {
             if(isDestroyed) {
                 this.despawnBullet(bullet);
             } else {
-                this.connections.forEach(connection => { 
-                    connection.socket.emit('updatePosition', bullet);
-                });
+                // this.connections.forEach(connection => { 
+                //     connection.socket.emit('updatePosition', bullet);
+                // });
             }
 
         }
@@ -91,7 +90,7 @@ module.exports = class LobbyGame extends LobbyBase {
                if (!player.reSpawn()){
                    console.log( player + " is dead");
                    connection.socket.emit("reSpawn", player);
-                   connection.socket.broadcast.to(this.id).emit("reSpawn", players[player]);
+                   connection.socket.broadcast.to(this.id).emit("reSpawn", player);
                };
             }
         }
@@ -111,10 +110,10 @@ module.exports = class LobbyGame extends LobbyBase {
 
         let bulletId = data['objectId'];
         let targetId = data['targetId'];
-        
+        let activatorId = data['activatorId'];
+        if(activatorId != connection.player.id) return;
         for( let otherConnection of this.connections) {
             let player = otherConnection.player;
-
             if(player.id == targetId) {
                 player.dealDamage(50);
                 if(player.isDead) {
@@ -130,7 +129,6 @@ module.exports = class LobbyGame extends LobbyBase {
                 bullet.isDestroyed = true;
             }
         }
-        console.log(this.bullets[0]);
         
     }
     randomRange( min, max ) {
