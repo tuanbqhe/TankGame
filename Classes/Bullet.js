@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 const vector2 = require('./Vector2');
-const serverObject = require('./serverOject');;
+const serverObject = require('./ServerOject');;
 
 module.exports = class Bullet extends serverObject {
     constructor (){

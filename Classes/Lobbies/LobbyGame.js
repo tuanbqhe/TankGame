@@ -1,5 +1,5 @@
 const gameLobbySettings = require('./GameLobbySettings')
-const LobbyState = require('../Utility/lobbyState')
+const LobbyState = require('../Utility/LobbyState')
 const Connection = require('../Connection')
 const Vector2 = require('../Vector2.js')
 const Bullet = require('../Bullet.js')
