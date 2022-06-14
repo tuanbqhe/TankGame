@@ -1,8 +1,8 @@
 const uuid = require('uuid');
 const vector2 = require('./Vector2');
-const serverObject = require('./ServerOject');;
+const ServerObject = require('./ServerObject');
 
-module.exports = class Bullet extends serverObject {
+module.exports = class Bullet extends ServerObject {
     constructor (){
         super();
         this.direction = new vector2();
