@@ -62,17 +62,17 @@ module.exports = class LobbyGame extends LobbyBase {
         
     }
     updateBullets() {
-        for(let bullet of this.bullets) {
-            let isDestroyed = bullet.onUpdate();
-            if(isDestroyed) {
-                this.despawnBullet(bullet);
-            } else {
+        // for(let bullet of this.bullets) {
+        //     let isDestroyed = bullet.onUpdate();
+        //     if(isDestroyed) {
+        //         this.despawnBullet(bullet);
+        //     } else {
                 // this.connections.forEach(connection => { 
                 //     connection.socket.emit('updatePosition', bullet);
                 // });
-            }
+        //     }
 
-        }
+        // }
     }
     despawnBullet(bullet = Bullet) {
         const index = this.bullets.indexOf(bullet);
@@ -127,6 +127,7 @@ module.exports = class LobbyGame extends LobbyBase {
         for (let bullet of this.bullets) {
             if (bullet.id == bulletId) {
                 bullet.isDestroyed = true;
+                this.despawnBullet(bullet);
             }
         }
         
