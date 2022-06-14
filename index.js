@@ -1,3 +1,5 @@
+// ws://127.0.0.1:4567/socket.io/?EIO=3&transport=websocket
+//ws://tankgame1.herokuapp.com:80/socket.io/?EIO=3&transport=websocket
 const io = require('socket.io')(process.env.PORT || 4567);
 const Server = require('./Classes/Server')
 const Connection = require('./Classes/Connection');
