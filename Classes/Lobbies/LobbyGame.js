@@ -48,6 +48,7 @@ module.exports = class LobbyGame extends LobbyBase {
         potion.position = new Vector2(-1,0);
         this.potions[potion.id] = potion;
         connection.socket.emit("serverSpawn", potion);
+        console.log("Potion spawned");
         connection.socket.broadcast.to(this.id).emit("serverSpawn", potion);
     }
 
