@@ -10,7 +10,7 @@ module.exports = class Player {
         this.reSpawnTime = new Number(0);
         this.reSpawnTicket = new Number(0);
         this.isDead = false;
-        this.health = new Number(100);
+        this.health = new Number(10);
     }
 
     dealDamage(damage) {
@@ -35,6 +35,14 @@ module.exports = class Player {
             }
         }
         return true;
+    }
+    healHp(hp) {
+        this.health += hp;
+        if(this.health >= 100) {
+            this.health = 100;
+            return true;
+        }
+        return false;
     }
     random2Numeric(min, max) {
         return Math.round(Math.random() * (max - min)) + min;

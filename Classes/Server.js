@@ -92,7 +92,7 @@ module.exports = class Server {
         
         connection.lobby = this.lobbys[lobbyId]; 
         this.lobbys[connection.player.lobby].onLeaveLobby(connection);
-
+        console.log("dd");
         this.lobbys[lobbyId].onEnterLobby(connection);
         
     }

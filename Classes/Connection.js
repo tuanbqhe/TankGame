@@ -50,6 +50,13 @@ module.exports = class Connection {
         socket.on('quitGame', () => {
             server.onSwitchLobby(connection, sever.generalID);
         })
+        socket.on("HPHeal", (data) => {
+            const potionId = data.id;
+            this.lobby.HpHeal(connection, potionId);
+        })
+        socket.on("HPStopHeal", () => {
+            this.lobby.HpStopHeal(connection);
+        })
     }
 
 }
